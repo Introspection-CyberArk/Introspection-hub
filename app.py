@@ -8,9 +8,9 @@ TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 
 # Your bots list
 BOTS = [
-    {"name": "J.A.R.V.I.S. AI", "username": "@IntroAssist_Bot"},
-    {"name": "Currency Exchange Bot", "username": "@currrency_exch_bot"},
-    {"name": "Num Spy Bot", "username": "@Num_Spy_Bot"}
+    {"name": "🤖 J.A.R.V.I.S. AI", "username": "@IntroAssist_Bot"},
+    {"name": "💱 Currency Exchange Bot", "username": "@currrency_exch_bot"},
+    {"name": "🔢 Num Spy Bot", "username": "@Num_Spy_Bot"}
 ]
 
 @app.route("/", methods=["GET"])
@@ -32,25 +32,50 @@ def webhook():
         if not chat_id:
             return "", 200
         
-        # Prepare reply based on command
+        # Prepare reply based on command (using HTML instead of Markdown)
         if text == "/start":
-            reply = "🤖 *Bot Hub*\n\nWelcome to @Introspection007's Bot Hub!\n\n*Available Bots:*\n"
-            for bot in BOTS:
-                reply += f"\n• {bot['name']}: {bot['username']}"
-            reply += "\n\n━━━━━━━━━━━━━━━━━━━━━\n👨‍💻 *Powered By @Introspection007*"
+            reply = """<b>🤖 Bot Hub</b>
+
+Welcome to @Introspection007's Bot Hub!
+
+<b>Available Bots:</b>
+
+• <b>J.A.R.V.I.S. AI</b>: @IntroAssist_Bot
+• <b>Currency Exchange Bot</b>: @currrency_exch_bot
+• <b>Num Spy Bot</b>: @Num_Spy_Bot
+
+━━━━━━━━━━━━━━━━━━━━━
+👨‍💻 <b>Powered By @Introspection007</b>
+
+Tap any username above to launch the bot!"""
         
         elif text == "/help":
-            reply = "🤖 *Bot Hub Help*\n\n*Commands:*\n/start - Show all bots\n/help - Show this help\n\n━━━━━━━━━━━━━━━━━━━━━\n👨‍💻 *Powered By @Introspection007*"
+            reply = """<b>🤖 Bot Hub Help</b>
+
+<b>Commands:</b>
+/start - Show all bots
+/help - Show this help
+
+<b>How to use:</b>
+Simply tap on any bot username to open it!
+
+━━━━━━━━━━━━━━━━━━━━━
+👨‍💻 <b>Powered By @Introspection007</b>"""
         
         else:
-            reply = "🤖 *Bot Hub*\n\nSend /start to see all available bots.\n\n━━━━━━━━━━━━━━━━━━━━━\n👨‍💻 *Powered By @Introspection007*"
+            reply = """<b>🤖 Bot Hub</b>
+
+Send /start to see all available bots.
+
+━━━━━━━━━━━━━━━━━━━━━
+👨‍💻 <b>Powered By @Introspection007</b>"""
         
-        # Send the reply back to Telegram
+        # Send the reply back to Telegram using HTML parse mode
         send_url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
         payload = {
             "chat_id": chat_id,
             "text": reply,
-            "parse_mode": "Markdown"
+            "parse_mode": "HTML"
         }
         
         response = requests.post(send_url, json=payload)
