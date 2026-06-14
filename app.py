@@ -6,9 +6,9 @@ app = Flask(__name__)
 
 TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 
-# Your bots list
+# Your bots list - WITH YOUR CORRECT USERNAMES
 BOTS = [
-    {"name": "🤖 J.A.R.V.I.S. AI", "username": "@IntroAssist_Bot"},
+    {"name": "🤖 J.A.R.V.I.S. AI", "username": "@IntroAssit_Bot"},        # Your actual username
     {"name": "💱 Currency Exchange Bot", "username": "@currrency_exch_bot"},
     {"name": "🔢 Num Spy Bot", "username": "@Num_Spy_Bot"}
 ]
@@ -20,11 +20,9 @@ def index():
 @app.route(f"/webhook/{TOKEN}", methods=["POST"])
 def webhook():
     try:
-        # Get the update from Telegram
         update = request.get_json()
         print(f"Update received: {update}")
         
-        # Extract message info
         message = update.get("message", {})
         chat_id = message.get("chat", {}).get("id")
         text = message.get("text", "")
@@ -32,22 +30,22 @@ def webhook():
         if not chat_id:
             return "", 200
         
-        # Prepare reply based on command (using HTML instead of Markdown)
         if text == "/start":
+            # Build the reply with clickable usernames
             reply = """<b>🤖 Bot Hub</b>
 
 Welcome to @Introspection007's Bot Hub!
 
 <b>Available Bots:</b>
 
-• <b>J.A.R.V.I.S. AI</b>: @IntroAssist_Bot
-• <b>Currency Exchange Bot</b>: @currrency_exch_bot
-• <b>Num Spy Bot</b>: @Num_Spy_Bot
+• <b>J.A.R.V.I.S. AI</b>: <a href="https://t.me/IntroAssit_Bot">@IntroAssit_Bot</a>
+• <b>Currency Exchange Bot</b>: <a href="https://t.me/currrency_exch_bot">@currrency_exch_bot</a>
+• <b>Num Spy Bot</b>: <a href="https://t.me/Num_Spy_Bot">@Num_Spy_Bot</a>
 
 ━━━━━━━━━━━━━━━━━━━━━
 👨‍💻 <b>Powered By @Introspection007</b>
 
-Tap any username above to launch the bot!"""
+Tap any bot name above to launch!"""
         
         elif text == "/help":
             reply = """<b>🤖 Bot Hub Help</b>
@@ -70,12 +68,12 @@ Send /start to see all available bots.
 ━━━━━━━━━━━━━━━━━━━━━
 👨‍💻 <b>Powered By @Introspection007</b>"""
         
-        # Send the reply back to Telegram using HTML parse mode
         send_url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
         payload = {
             "chat_id": chat_id,
             "text": reply,
-            "parse_mode": "HTML"
+            "parse_mode": "HTML",
+            "disable_web_page_preview": True
         }
         
         response = requests.post(send_url, json=payload)
