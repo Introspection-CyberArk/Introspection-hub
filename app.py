@@ -6,9 +6,9 @@ app = Flask(__name__)
 
 TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 
-# Your bots list - WITH YOUR CORRECT USERNAMES
+# Your bots list - UPDATED with new JARVIS username
 BOTS = [
-    {"name": "🤖 J.A.R.V.I.S. AI", "username": "@IntroAssit_Bot"},        # Your actual username
+    {"name": "🤖 J.A.R.V.I.S. AI", "username": "@Jarvs_Ai_bot"},           # Updated
     {"name": "💱 Currency Exchange Bot", "username": "@currrency_exch_bot"},
     {"name": "🔢 Num Spy Bot", "username": "@Num_Spy_Bot"}
 ]
@@ -31,14 +31,13 @@ def webhook():
             return "", 200
         
         if text == "/start":
-            # Build the reply with clickable usernames
             reply = """<b>🤖 Bot Hub</b>
 
 Welcome to @Introspection007's Bot Hub!
 
 <b>Available Bots:</b>
 
-• <b>J.A.R.V.I.S. AI</b>: <a href="https://t.me/IntroAssit_Bot">@IntroAssit_Bot</a>
+• <b>J.A.R.V.I.S. AI</b>: <a href="https://t.me/Jarvs_Ai_bot">@Jarvs_Ai_bot</a>
 • <b>Currency Exchange Bot</b>: <a href="https://t.me/currrency_exch_bot">@currrency_exch_bot</a>
 • <b>Num Spy Bot</b>: <a href="https://t.me/Num_Spy_Bot">@Num_Spy_Bot</a>
 
