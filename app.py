@@ -1,6 +1,6 @@
 import os
 import requests
-from flask import Flask, request, jsonify
+from flask import Flask, request
 
 app = Flask(__name__)
 
@@ -8,25 +8,21 @@ TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 
 # Your bots list
 BOTS = [
-    {"name": "🤖 J.A.R.V.I.S. AI", "username": "@IntroAssist_Bot"},
-    {"name": "💱 Currency Exchange Bot", "username": "@currrency_exch_bot"},
-    {"name": "🔢 Num Spy Bot", "username": "@Num_Spy_Bot"}
+    {"name": "J.A.R.V.I.S. AI", "username": "@IntroAssist_Bot"},
+    {"name": "Currency Exchange Bot", "username": "@currrency_exch_bot"},
+    {"name": "Num Spy Bot", "username": "@Num_Spy_Bot"}
 ]
 
 @app.route("/", methods=["GET"])
 def index():
-    return jsonify({
-        "status": "Bot Hub is running!",
-        "creator": "@Introspection007",
-        "bots_count": len(BOTS)
-    })
+    return "Bot Hub is running! - @Introspection007"
 
 @app.route(f"/webhook/{TOKEN}", methods=["POST"])
 def webhook():
     try:
         # Get the update from Telegram
         update = request.get_json()
-        print(f"Update received: {update}")  # This will appear in Vercel logs
+        print(f"Update received: {update}")
         
         # Extract message info
         message = update.get("message", {})
@@ -38,13 +34,13 @@ def webhook():
         
         # Prepare reply based on command
         if text == "/start":
-            reply = "🤖 *Bot Hub*\n\nWelcome to @Introspection007's Bot Hub!\n\n*Available Bots:*\n\n"
+            reply = "🤖 *Bot Hub*\n\nWelcome to @Introspection007's Bot Hub!\n\n*Available Bots:*\n"
             for bot in BOTS:
-                reply += f"• {bot['name']}: {bot['username']}\n"
-            reply += "\n━━━━━━━━━━━━━━━━━━━━━\n👨‍💻 *Powered By @Introspection007*\n\nTap any username above to launch the bot!"
+                reply += f"\n• {bot['name']}: {bot['username']}"
+            reply += "\n\n━━━━━━━━━━━━━━━━━━━━━\n👨‍💻 *Powered By @Introspection007*"
         
         elif text == "/help":
-            reply = "🤖 *Bot Hub Help*\n\n*Commands:*\n/start - Show all bots\n/help - Show this help\n\n*How to use:*\nSimply tap on any bot username to open it!\n\n━━━━━━━━━━━━━━━━━━━━━\n👨‍💻 *Powered By @Introspection007*"
+            reply = "🤖 *Bot Hub Help*\n\n*Commands:*\n/start - Show all bots\n/help - Show this help\n\n━━━━━━━━━━━━━━━━━━━━━\n👨‍💻 *Powered By @Introspection007*"
         
         else:
             reply = "🤖 *Bot Hub*\n\nSend /start to see all available bots.\n\n━━━━━━━━━━━━━━━━━━━━━\n👨‍💻 *Powered By @Introspection007*"
@@ -58,7 +54,8 @@ def webhook():
         }
         
         response = requests.post(send_url, json=payload)
-        print(f"Send response: {response.status_code}")  # This will appear in Vercel logs
+        print(f"Send response status: {response.status_code}")
+        print(f"Send response body: {response.text}")
         
         return "", 200
         
