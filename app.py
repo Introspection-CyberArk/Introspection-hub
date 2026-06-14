@@ -6,63 +6,63 @@ app = Flask(__name__)
 
 TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 
+# Your bots list
+BOTS = [
+    {"name": "🤖 J.A.R.V.I.S. AI", "username": "@IntroAssist_Bot"},
+    {"name": "💱 Currency Exchange Bot", "username": "@currrency_exch_bot"},
+    {"name": "🔢 Num Spy Bot", "username": "@Num_Spy_Bot"}
+]
+
 @app.route("/", methods=["GET"])
 def index():
     return jsonify({
         "status": "Bot Hub is running!",
-        "creator": "@Introspection007"
+        "creator": "@Introspection007",
+        "bots_count": len(BOTS)
     })
 
 @app.route(f"/webhook/{TOKEN}", methods=["POST"])
 def webhook():
     try:
-        # Get the update
+        # Get the update from Telegram
         update = request.get_json()
+        print(f"Update received: {update}")  # This will appear in Vercel logs
         
         # Extract message info
         message = update.get("message", {})
         chat_id = message.get("chat", {}).get("id")
         text = message.get("text", "")
         
-        # Always return 200 first (Telegram requirement)
         if not chat_id:
             return "", 200
         
-        # Prepare response based on command
+        # Prepare reply based on command
         if text == "/start":
-            reply = """🤖 **Bot Hub**
-
-Welcome! Here are my bots:
-
-• 🤖 **J.A.R.V.I.S. AI** - @IntroAssist_Bot
-• 💱 **Currency Exchange** - @currrency_exch_bot  
-• 🔢 **Num Spy** - @Num_Spy_Bot
-
-━━━━━━━━━━━━━━━━━━━━━
-👨‍💻 Powered By @Introspection007
-
-Tap any username to open!"""
-        else:
-            reply = """🤖 **Bot Hub**
-
-Send /start to see all available bots.
-
-━━━━━━━━━━━━━━━━━━━━━
-👨‍💻 Powered By @Introspection007"""
+            reply = "🤖 *Bot Hub*\n\nWelcome to @Introspection007's Bot Hub!\n\n*Available Bots:*\n\n"
+            for bot in BOTS:
+                reply += f"• {bot['name']}: {bot['username']}\n"
+            reply += "\n━━━━━━━━━━━━━━━━━━━━━\n👨‍💻 *Powered By @Introspection007*\n\nTap any username above to launch the bot!"
         
-        # Send the reply
+        elif text == "/help":
+            reply = "🤖 *Bot Hub Help*\n\n*Commands:*\n/start - Show all bots\n/help - Show this help\n\n*How to use:*\nSimply tap on any bot username to open it!\n\n━━━━━━━━━━━━━━━━━━━━━\n👨‍💻 *Powered By @Introspection007*"
+        
+        else:
+            reply = "🤖 *Bot Hub*\n\nSend /start to see all available bots.\n\n━━━━━━━━━━━━━━━━━━━━━\n👨‍💻 *Powered By @Introspection007*"
+        
+        # Send the reply back to Telegram
         send_url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
         payload = {
             "chat_id": chat_id,
             "text": reply,
             "parse_mode": "Markdown"
         }
-        requests.post(send_url, json=payload)
+        
+        response = requests.post(send_url, json=payload)
+        print(f"Send response: {response.status_code}")  # This will appear in Vercel logs
         
         return "", 200
         
     except Exception as e:
-        # Log error but still return 200
         print(f"Error: {e}")
         return "", 200
 
